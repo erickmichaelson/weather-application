@@ -13,8 +13,7 @@ console.log(cityName);
   if (cityName) {
     getUserCities(cityName);
 
-    repoContainerEl.textContent = '';
-    cityInputEl.value = '';
+      cityInputEl.value = '';
   } else {
     alert('Please enter a city name');
   }
@@ -23,14 +22,14 @@ console.log(cityName);
 
 //this is the function that fetches the weather app api and uses and if statement to check for an response
 var getUserCities = function (city) {
-  var apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIkey}`
+  var apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIkey}&units=imperial`
   
   fetch(apiUrl)
     .then(function (response) {
       if (response.ok) {
         response.json().then(function (data) {
           console.log("API response",data)
-          displayRepos(data, user);
+          displayWeather(data);
         });
       } else {
         alert('Error: ' + response.statusText);
@@ -42,39 +41,48 @@ var getUserCities = function (city) {
 };
 
 
-var displayWeather = function (repos, searchTerm) {
-  if (repos.length === 0) {
-    repoContainerEl.textContent = 'No cities found.';
-    return;
-  }
+function displayWeather (data) {
+  var HTMLstring = `<div class="card">
+  <p>Temp: ${data.main.temp}</p>
+  <p>Humidity: ${data.main.humidity}</p>
+  <p>Wind Speed: ${data.wind.speed}</p>
+  <p>${data.weather[0].description}</p>
+  <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png"></img>
+  </div>`
+  console.log(HTMLstring);
+  document.getElementById("currentweather").innerHTML = HTMLstring
+  // if (repos.length === 0) {
+  //   repoContainerEl.textContent = 'No cities found.';
+  //   return;
+  // }
 
-  repoSearchTerm.textContent = searchTerm;
+  // repoSearchTerm.textContent = searchTerm;
 
-  for (var i = 0; i < repos.length; i++) {
-    var repoName = repos[i].owner.login + '/' + repos[i].name;
+  // for (var i = 0; i < repos.length; i++) {
+  //   var repoName = repos[i].owner.login + '/' + repos[i].name;
 
-    var repoEl = document.createElement('div');
-    repoEl.classList = 'list-item flex-row justify-space-between align-center';
+  //   var repoEl = document.createElement('div');
+  //   repoEl.classList = 'list-item flex-row justify-space-between align-center';
 
-    var titleEl = document.createElement('span');
-    titleEl.textContent = repoName;
+  //   var titleEl = document.createElement('span');
+  //   titleEl.textContent = repoName;
 
-    repoEl.appendChild(titleEl);
+  //   repoEl.appendChild(titleEl);
 
-    var statusEl = document.createElement('span');
-    statusEl.classList = 'flex-row align-center';
+  //   var statusEl = document.createElement('span');
+  //   statusEl.classList = 'flex-row align-center';
 
-    if (repos[i].open_issues_count > 0) {
-      statusEl.innerHTML =
-        "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + ' issue(s)';
-    } else {
-      statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
-    }
+  //   if (repos[i].open_issues_count > 0) {
+  //     statusEl.innerHTML =
+  //       "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + ' issue(s)';
+  //   } else {
+  //     statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
+  //   }
 
-    repoEl.appendChild(statusEl);
+  //   repoEl.appendChild(statusEl);
 
-    repoContainerEl.appendChild(repoEl);
-  }
+  //   repoContainerEl.appendChild(repoEl);
+  // }
 };
 
 cityFormEl.addEventListener('submit', formSubmitHandler);
