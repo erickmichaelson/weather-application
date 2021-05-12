@@ -2,16 +2,16 @@ var cityFormEl = document.querySelector('#city-form');
 var cityInputEl = document.querySelector('#city-name');
 var repoContainerEl = document.querySelector('#repos-container');
 var repoSearchTerm = document.querySelector('#repo-search-term');
-
+var APIkey = "9224a31a8f614cd716db93686de7f9c6";
 var formSubmitHandler = function (event) {
   event.preventDefault();
 
   var cityName = cityInputEl.value.trim();
 
-
+console.log(cityName);
   //this if statement checks to make sure there was something inputted into the city input
   if (cityName) {
-    getUserRepos(cityName);
+    getUserCities(cityName);
 
     repoContainerEl.textContent = '';
     cityInputEl.value = '';
@@ -22,13 +22,14 @@ var formSubmitHandler = function (event) {
 
 
 //this is the function that fetches the weather app api and uses and if statement to check for an response
-var getUserCities = function (user) {
-  var apiUrl = 'http://maps.openweathermap.org/maps/2.0/weather/{op}/{z}/{x}/{y}&appid={9224a31a8f614cd716db93686de7f9c6}';
-
+var getUserCities = function (city) {
+  var apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIkey}`
+  
   fetch(apiUrl)
     .then(function (response) {
       if (response.ok) {
         response.json().then(function (data) {
+          console.log("API response",data)
           displayRepos(data, user);
         });
       } else {
@@ -41,7 +42,7 @@ var getUserCities = function (user) {
 };
 
 
-var displayRepos = function (repos, searchTerm) {
+var displayWeather = function (repos, searchTerm) {
   if (repos.length === 0) {
     repoContainerEl.textContent = 'No cities found.';
     return;
