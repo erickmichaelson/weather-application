@@ -12,7 +12,7 @@ console.log(cityName);
   //this if statement checks to make sure there was something inputted into the city input
   if (cityName) {
     getUserCities(cityName);
-
+fiveDayForecast(cityName)
       cityInputEl.value = '';
   } else {
     alert('Please enter a city name');
@@ -30,6 +30,7 @@ var getUserCities = function (city) {
         response.json().then(function (data) {
           console.log("API response",data)
           displayWeather(data);
+          // fiveDayForecast(city);
         });
       } else {
         alert('Error: ' + response.statusText);
@@ -39,6 +40,41 @@ var getUserCities = function (city) {
       alert('Unable to connect to Weather API');
     });
 };
+
+
+function fiveDayForecast(city) {
+  var apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${APIkey}&units=imperial`
+ console.log(apiUrl,"five");
+  fetch(apiUrl)
+    .then(function (response) {
+      if (response.ok) {
+        response.json().then(function (data) {
+          console.log("API response",data)
+          
+          let HTMLstring = '';
+
+          for(let i=0; i<data.list.length; i=i+8) {
+
+             HTMLstring = `<div class="card">
+            <p>Temp: ${data.list[i].main.temp}</p>
+            <p>Humidity: ${data.list[i].main.humidity}</p>
+            <p>Wind Speed: ${data.list[i].wind.speed}</p>
+            <p>${data.list[i].weather[0].description}</p>
+            <img src="https://openweathermap.org/img/wn/${data.list[i].weather[0].icon}@2x.png"></img>
+            </div>`
+          }
+       
+        });
+        console.log(HTMLstring),data.list.length;
+        document.getElementById("five-day").innerHTML = HTMLstring;
+      } else {
+        alert('Error: ' + response.statusText);
+      }
+    })
+    // .catch(function (error) {
+    //   alert('Unable to connect to Weather API');
+    // });
+}
 
 
 function displayWeather (data) {
